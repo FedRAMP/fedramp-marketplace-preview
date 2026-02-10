@@ -23,6 +23,7 @@
             padding: 20px;
             border-radius: 5px;
             background: white;
+            margin-bottom: 20px;
         }
         .field {
             margin-bottom: 15px;
@@ -37,41 +38,42 @@
             background: #f9f9f9;
             border-radius: 3px;
         }
-        .approval-section {
-            margin-top: 40px;
-            padding: 20px;
-            background: #e8f4f8;
-            border-radius: 5px;
-        }
-        .buttons {
-            margin-top: 20px;
-        }
-        .btn {
-            padding: 10px 20px;
-            margin-right: 10px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .btn-approve { background: #28a745; color: white; }
-        .btn-reject { background: #dc3545; color: white; }
         .error {
             color: #dc3545;
             background: #f8d7da;
-            padding: 10px;
+            padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+        .warning {
+            color: #856404;
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
         }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>FedRAMP Marketplace Listing Preview</h1>
-        <p>Review your marketplace listing below before approval. Then, fill out the form to approve the listing, which can be found in your intake email. If something appears wrong, you can reject the listing and refill the intake form, or adjust your json data if you are ADS conformant. </p>
+        <p>Review your marketplace listing below.</p>
     </div>
 
-    <div id="error-message" class="error" style="display: none;"></div>
+    <!-- Error/Success Messages -->
+    <div id="json-error" class="error" style="display: none;"></div>
+    <div id="json-success" class="success" style="display: none;"></div>
+    <div id="missing-data-warning" class="warning" style="display: none;"></div>
 
     <div class="listing-card">
         <h2>Marketplace Listing Details</h2>
@@ -113,7 +115,6 @@
     </div>
 
     <script>
-        // Extract URL parameters and populate the preview
         function loadPreviewData() {
             const urlParams = new URLSearchParams(window.location.search);
             
@@ -125,6 +126,8 @@
             const type = urlParams.get('type') || 'Not provided';
             const description = urlParams.get('description') || '';
             const jsonLink = urlParams.get('jsonLink') || '';
+            const jsonError = urlParams.get('jsonError') || '';
+            const jsonProcessed = urlParams.get('jsonProcessed') === 'true';
 
             // Populate the display elements
             document.getElementById('frid-display').textContent = frid;
@@ -145,12 +148,39 @@
                 document.getElementById('json-field').style.display = 'block';
             }
 
+            // Handle JSON processing status
+            if (jsonError && jsonError.trim()) {
+                // Show JSON error
+                const errorDiv = document.getElementById('json-error');
+                errorDiv.innerHTML = `
+                    <h4>❌ JSON Processing Error</h4>
+                    <p>There was an issue processing the JSON file from: <a href="${jsonLink}" target="_blank">${jsonLink}</a></p>
+                    <p><strong>Error:</strong> ${jsonError}</p>
+                    <p><em>The form data shown below is from your manual entry, not the JSON file.</em></p>
+                `;
+                errorDiv.style.display = 'block';
+            } else if (jsonProcessed) {
+                // Show success message
+                const successDiv = document.getElementById('json-success');
+                successDiv.innerHTML = `
+                    <h4>✅ JSON Successfully Processed</h4>
+                    <p>Data has been successfully loaded from: <a href="${jsonLink}" target="_blank">${jsonLink}</a></p>
+                    <p><em>The information shown below comes from your JSON file.</em></p>
+                `;
+                successDiv.style.display = 'block';
+            }
+
             // Check if we have the minimum required data
             if (!urlParams.get('frid') || !urlParams.get('company')) {
-                document.getElementById('error-message').textContent = 'Error: Missing required preview data in URL parameters.';
-                document.getElementById('error-message').style.display = 'block';
+                const warningDiv = document.getElementById('missing-data-warning');
+                warningDiv.innerHTML = `
+                    <h4>⚠️ Missing Data</h4>
+                    <p>Some required information is missing from the URL parameters.</p>
+                `;
+                warningDiv.style.display = 'block';
             }
         }
+
         // Load the data when the page loads
         window.onload = loadPreviewData;
     </script>
