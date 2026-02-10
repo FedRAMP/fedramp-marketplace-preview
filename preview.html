@@ -112,16 +112,6 @@
         </div>
     </div>
 
-    <div class="approval-section">
-        <h3>Approve Your Listing</h3>
-        <p>Does this information look correct? Click approve to finalize your marketplace listing submission.</p>
-        
-        <div class="buttons">
-            <button class="btn btn-approve" onclick="approveListing()">✓ Approve Listing</button>
-            <button class="btn btn-reject" onclick="rejectListing()">✗ Request Changes</button>
-        </div>
-    </div>
-
     <script>
         // Extract URL parameters and populate the preview
         function loadPreviewData() {
@@ -161,17 +151,6 @@
                 document.getElementById('error-message').style.display = 'block';
             }
         }
-
-        function approveListing() {
-            alert('Approval functionality coming soon! Your listing has been noted as approved.');
-            // TODO: This will eventually call back to your Google Apps Script
-        }
-
-        function rejectListing() {
-            alert('Rejection functionality coming soon! Your listing has been noted for changes.');
-            // TODO: This will eventually call back to your Google Apps Script
-        }
-
         // Load the data when the page loads
         window.onload = loadPreviewData;
     </script>
