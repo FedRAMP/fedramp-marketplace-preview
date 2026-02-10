@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FedRAMP Marketplace Listing Preview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            background: #f4f4f4;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .listing-card {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            background: white;
+        }
+        .field {
+            margin-bottom: 15px;
+        }
+        .label {
+            font-weight: bold;
+            color: #333;
+        }
+        .value {
+            margin-top: 5px;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+        .approval-section {
+            margin-top: 40px;
+            padding: 20px;
+            background: #e8f4f8;
+            border-radius: 5px;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-approve { background: #28a745; color: white; }
+        .btn-reject { background: #dc3545; color: white; }
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FedRAMP Marketplace Listing Preview</h1>
+        <p>Review your marketplace listing below before approval.</p>
+    </div>
+
+    <div id="error-message" class="error" style="display: none;"></div>
+
+    <div class="listing-card">
+        <h2>Marketplace Listing Details</h2>
+        
+        <div class="field">
+            <div class="label">FRID:</div>
+            <div class="value" id="frid-display">-</div>
+        </div>
+
+        <div class="field">
+            <div class="label">Company Name:</div>
+            <div class="value" id="company-display">-</div>
+        </div>
+
+        <div class="field">
+            <div class="label">Product Name:</div>
+            <div class="value" id="product-display">-</div>
+        </div>
+
+        <div class="field">
+            <div class="label">Authorization Path:</div>
+            <div class="value" id="path-display">-</div>
+        </div>
+
+        <div class="field">
+            <div class="label">Submission Type:</div>
+            <div class="value" id="type-display">-</div>
+        </div>
+
+        <div class="field" id="description-field" style="display: none;">
+            <div class="label">Product Description:</div>
+            <div class="value" id="description-display">-</div>
+        </div>
+
+        <div class="field" id="json-field" style="display: none;">
+            <div class="label">JSON Marketplace URL:</div>
+            <div class="value" id="json-display">-</div>
+        </div>
+    </div>
+
+    <div class="approval-section">
+        <h3>Approve Your Listing</h3>
+        <p>Does this information look correct? Click approve to finalize your marketplace listing submission.</p>
+        
+        <div class="buttons">
+            <button class="btn btn-approve" onclick="approveListing()">✓ Approve Listing</button>
+            <button class="btn btn-reject" onclick="rejectListing()">✗ Request Changes</button>
+        </div>
+    </div>
+
+    <script>
+        // Extract URL parameters and populate the preview
+        function loadPreviewData() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Get all parameters
+            const frid = urlParams.get('frid') || 'Not provided';
+            const company = urlParams.get('company') || 'Not provided';
+            const product = urlParams.get('product') || 'Not provided';
+            const path = urlParams.get('path') || 'Not provided';
+            const type = urlParams.get('type') || 'Not provided';
+            const description = urlParams.get('description') || '';
+            const jsonLink = urlParams.get('jsonLink') || '';
+
+            // Populate the display elements
+            document.getElementById('frid-display').textContent = frid;
+            document.getElementById('company-display').textContent = company;
+            document.getElementById('product-display').textContent = product;
+            document.getElementById('path-display').textContent = path;
+            document.getElementById('type-display').textContent = type;
+
+            // Show description field only if there's data
+            if (description && description.trim()) {
+                document.getElementById('description-display').textContent = description;
+                document.getElementById('description-field').style.display = 'block';
+            }
+
+            // Show JSON field only if there's data
+            if (jsonLink && jsonLink.trim()) {
+                document.getElementById('json-display').innerHTML = `<a href="${jsonLink}" target="_blank">${jsonLink}</a>`;
+                document.getElementById('json-field').style.display = 'block';
+            }
+
+            // Check if we have the minimum required data
+            if (!urlParams.get('frid') || !urlParams.get('company')) {
+                document.getElementById('error-message').textContent = 'Error: Missing required preview data in URL parameters.';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        }
+
+        function approveListing() {
+            alert('Approval functionality coming soon! Your listing has been noted as approved.');
+            // TODO: This will eventually call back to your Google Apps Script
+        }
+
+        function rejectListing() {
+            alert('Rejection functionality coming soon! Your listing has been noted for changes.');
+            // TODO: This will eventually call back to your Google Apps Script
+        }
+
+        // Load the data when the page loads
+        window.onload = loadPreviewData;
+    </script>
+</body>
+</html>
